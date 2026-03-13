@@ -430,18 +430,3 @@ export default function DoctorDashboard() {
     </div>
   )
 }
-```
-
----
-
-Only 3 things were changed from your original:
-
-1. `const [feedbackAppt, setFeedbackAppt] = useState(null)` added at top
-2. Mark Complete button now also calls `setFeedbackAppt(selected)`
-3. `<FeedbackModal />` added at the very bottom before closing `</div>`
-
-Now push:
-```
-git add .
-git commit -m "feedback modal added"
-git push
