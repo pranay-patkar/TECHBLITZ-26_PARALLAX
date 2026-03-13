@@ -5,9 +5,9 @@ import { useApp } from '../hooks/useApp'
 import { t } from '../i18n/translations'
 import { DOCTORS_DATA, detectUrgency, generateTimeSlots, getDoctorDisplayName } from '../services/supabase'
 import { addAppointment, getAppointments } from '../services/store'
-
+ 
 const STEPS = 5
-
+ 
 function ProgressDots({ step }) {
   return (
     <div className="flex items-center gap-2 justify-center mb-6">
@@ -17,14 +17,14 @@ function ProgressDots({ step }) {
     </div>
   )
 }
-
+ 
 const SLIDE = {
   initial: { opacity: 0, x: 40 },
   animate: { opacity: 1, x: 0 },
   exit: { opacity: 0, x: -40 },
   transition: { duration: 0.25, ease: 'easeOut' },
 }
-
+ 
 const CHOOSE_DOCTOR  = { en: 'Choose Doctor',     hi: 'डॉक्टर चुनें',         mr: 'डॉक्टर निवडा' }
 const DATE_LABEL     = { en: 'Date',              hi: 'तारीख',                mr: 'तारीख' }
 const SELECT_TIME    = { en: 'Select Time Slot',  hi: 'समय चुनें',            mr: 'वेळ निवडा' }
@@ -43,14 +43,14 @@ const TIME_LABEL     = { en: 'Time',             hi: 'समय',               
 const STATUS_LABEL   = { en: 'Status',           hi: 'स्थिति',               mr: 'स्थिती' }
 const URGENT_STATUS  = { en: 'URGENT',           hi: 'आपातकाल',              mr: 'तातडीचे' }
 const PENDING_STATUS = { en: 'Pending Confirmation', hi: 'पुष्टि प्रतीक्षित', mr: 'पुष्टीची प्रतीक्षा' }
-
+ 
 export default function BookingForm({ onClose }) {
   const { lang } = useApp()
   const [step, setStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [confirmation, setConfirmation] = useState(null)
-
+ 
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -60,10 +60,10 @@ export default function BookingForm({ onClose }) {
     date: new Date().toISOString().split('T')[0],
     timeSlot: '',
   })
-
+ 
   const urgent = detectUrgency(form.symptoms)
   const allSlots = generateTimeSlots('09:00', '17:00', 15)
-
+ 
   const bookedSlots = getAppointments()
     .filter(a =>
       a.doctor_name === form.doctor &&
@@ -71,16 +71,16 @@ export default function BookingForm({ onClose }) {
       a.status !== 'cancelled'
     )
     .map(a => a.time_slot)
-
+ 
   const availableSlots = allSlots.filter(s => !bookedSlots.includes(s))
-
+ 
   const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }))
-
+ 
   const handlePhone = (e) => {
     const val = e.target.value.replace(/[^0-9+\s\-]/g, '')
     setForm(f => ({ ...f, phone: val }))
   }
-
+ 
   const next = () => {
     setError('')
     if (step === 0) {
@@ -99,9 +99,9 @@ export default function BookingForm({ onClose }) {
     }
     setStep(s => s + 1)
   }
-
+ 
   const back = () => { setStep(s => s - 1); setError('') }
-
+ 
   const handleConfirm = async () => {
     if (!form.timeSlot) {
       setError(lang === 'hi' ? 'कृपया समय चुनें' : lang === 'mr' ? 'कृपया वेळ निवडा' : 'Please select a time slot.')
@@ -125,10 +125,10 @@ export default function BookingForm({ onClose }) {
     setStep(4)
     setLoading(false)
   }
-
+ 
   // ✅ Helper: translated doctor display name
   const dn = (name) => getDoctorDisplayName(name, lang)
-
+ 
   return (
     <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4"
       style={{ background: 'rgba(15,25,35,0.6)', backdropFilter: 'blur(6px)' }}>
@@ -157,12 +157,12 @@ export default function BookingForm({ onClose }) {
             </motion.div>
           )}
         </div>
-
+ 
         <div className="px-6 py-6">
           <ProgressDots step={step} />
-
+ 
           <AnimatePresence mode="wait">
-
+ 
             {/* Step 0: Name + Phone */}
             {step === 0 && (
               <motion.div key="s0" {...SLIDE} className="space-y-4">
@@ -193,7 +193,7 @@ export default function BookingForm({ onClose }) {
                 </div>
               </motion.div>
             )}
-
+ 
             {/* Step 1: Symptoms */}
             {step === 1 && (
               <motion.div key="s1" {...SLIDE} className="space-y-4">
@@ -214,7 +214,7 @@ export default function BookingForm({ onClose }) {
                 )}
               </motion.div>
             )}
-
+ 
             {/* Step 2: Doctor + Date */}
             {step === 2 && (
               <motion.div key="s2" {...SLIDE} className="space-y-4">
@@ -261,7 +261,7 @@ export default function BookingForm({ onClose }) {
                 </div>
               </motion.div>
             )}
-
+ 
             {/* Step 3: Time Slot */}
             {step === 3 && (
               <motion.div key="s3" {...SLIDE} className="space-y-3">
@@ -306,7 +306,7 @@ export default function BookingForm({ onClose }) {
                 )}
               </motion.div>
             )}
-
+ 
             {/* Step 4: Confirmation */}
             {step === 4 && confirmation && (
               <motion.div key="s4" {...SLIDE} className="text-center">
@@ -316,13 +316,13 @@ export default function BookingForm({ onClose }) {
                   <CheckCircle className="w-8 h-8 text-white" />
                 </motion.div>
                 <h3 className="font-serif text-xl text-obsidian dark:text-ivory mb-1">{t(lang, 'book_confirmed')}</h3>
-
+ 
                 {/* ✅ FIX: Shows ACTUAL registered phone number */}
                 <p className="text-sm text-slate mb-2 flex items-center justify-center gap-1">
                   <MessageCircle className="w-3.5 h-3.5 text-mint" />
                   {WHATSAPP_MSG[lang]} {confirmation.phone}
                 </p>
-
+ 
                 <div className="text-left space-y-2.5 p-4 rounded-2xl bg-mist/60 dark:bg-slate/10 mb-4">
                   {[
                     [PATIENT_LABEL[lang],  confirmation.patient_name],
@@ -347,12 +347,12 @@ export default function BookingForm({ onClose }) {
               </motion.div>
             )}
           </AnimatePresence>
-
+ 
           {error && (
             <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }}
               className="text-xs text-coral mt-3 text-center">{error}</motion.p>
           )}
-
+ 
           {step < 4 && (
             <div className="flex gap-3 mt-6">
               {step > 0 && (
