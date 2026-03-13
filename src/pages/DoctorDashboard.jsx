@@ -26,8 +26,6 @@ export default function DoctorDashboard() {
   const [noteSaved, setNoteSaved] = useState(false)
   const [sideOpen, setSideOpen] = useState(true)
   const [activeTab, setActiveTab] = useState('schedule')
-
-  // ── ADDED ──
   const [feedbackAppt, setFeedbackAppt] = useState(null)
 
   const today = new Date().toISOString().split('T')[0]
@@ -64,7 +62,6 @@ export default function DoctorDashboard() {
     completed: myAppointments.filter(a => a.status === 'completed').length,
   }
 
-  // ── UPDATED ──
   const markComplete = (id) => {
     updateAppointment(id, { status: 'completed' })
   }
@@ -89,7 +86,6 @@ export default function DoctorDashboard() {
   return (
     <div className="flex h-screen pt-16 bg-warm-white dark:bg-obsidian overflow-hidden">
 
-      {/* Sidebar */}
       <AnimatePresence>
         {sideOpen && (
           <motion.aside
@@ -164,9 +160,7 @@ export default function DoctorDashboard() {
         )}
       </AnimatePresence>
 
-      {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top bar */}
         <div className="px-6 py-4 border-b border-mist/60 dark:border-slate/20 flex items-center justify-between bg-white dark:bg-obsidian/80">
           <div className="flex items-center gap-3">
             <button onClick={() => setSideOpen(o => !o)} className="btn-ghost w-8 h-8 p-0 justify-center">
@@ -186,7 +180,6 @@ export default function DoctorDashboard() {
           )}
         </div>
 
-        {/* Stats strip */}
         <div className="px-6 py-3 border-b border-mist/40 dark:border-slate/20 flex gap-6 overflow-x-auto bg-white/60 dark:bg-obsidian/60">
           {[
             { label: 'Total',     value: stats.total,     color: 'text-teal'  },
@@ -202,7 +195,6 @@ export default function DoctorDashboard() {
           ))}
         </div>
 
-        {/* ── Schedule Tab ── */}
         {activeTab === 'schedule' && (
           <div className="flex-1 overflow-hidden flex">
             <div className="w-80 flex-shrink-0 overflow-y-auto border-r border-mist/60 dark:border-slate/20">
@@ -253,7 +245,6 @@ export default function DoctorDashboard() {
               </div>
             </div>
 
-            {/* Detail panel */}
             <div className="flex-1 overflow-y-auto p-6">
               <AnimatePresence mode="wait">
                 {selected ? (
@@ -264,7 +255,6 @@ export default function DoctorDashboard() {
                     exit={{ opacity: 0 }}
                     className="max-w-lg space-y-4"
                   >
-                    {/* Patient Info Card */}
                     <div className={`p-6 rounded-2xl ${selected.urgent ? 'bg-coral/10 border border-coral/30' : 'card'}`}>
                       <div className="flex items-start justify-between mb-4">
                         <div>
@@ -275,7 +265,6 @@ export default function DoctorDashboard() {
                         </div>
                         <StatusChip status={selected.status} urgent={selected.urgent} />
                       </div>
-
                       <div className="grid grid-cols-2 gap-3 mb-4">
                         <div className="p-3 rounded-xl bg-mist/60 dark:bg-slate/10">
                           <p className="text-xs text-slate uppercase tracking-wider mb-1">Time</p>
@@ -286,14 +275,12 @@ export default function DoctorDashboard() {
                           <p className="font-semibold text-sm text-obsidian dark:text-ivory capitalize">{selected.source}</p>
                         </div>
                       </div>
-
                       <div className="p-3 rounded-xl bg-mist/60 dark:bg-slate/10">
                         <p className="text-xs text-slate uppercase tracking-wider mb-1">Symptoms</p>
                         <p className="text-sm text-obsidian dark:text-ivory">{selected.symptoms || 'Not specified'}</p>
                       </div>
                     </div>
 
-                    {/* Notes Section */}
                     <div className="card p-5">
                       <h3 className="font-semibold text-sm text-obsidian dark:text-ivory mb-3 flex items-center gap-2">
                         <FileText className="w-4 h-4 text-teal" /> Consultation Notes
@@ -317,7 +304,6 @@ export default function DoctorDashboard() {
                       </button>
                     </div>
 
-                    {/* ── UPDATED Action Button ── */}
                     {selected.status !== 'completed' && selected.status !== 'cancelled' && (
                       <button
                         onClick={() => {
@@ -348,7 +334,6 @@ export default function DoctorDashboard() {
           </div>
         )}
 
-        {/* ── Patient Notes Tab ── */}
         {activeTab === 'notes' && (
           <div className="flex-1 overflow-y-auto p-6">
             <div className="max-w-2xl space-y-4">
@@ -385,7 +370,6 @@ export default function DoctorDashboard() {
           </div>
         )}
 
-        {/* ── Analytics Tab ── */}
         {activeTab === 'analytics' && (
           <div className="flex-1 overflow-y-auto p-6">
             <div className="max-w-lg space-y-4">
@@ -417,7 +401,6 @@ export default function DoctorDashboard() {
         )}
       </div>
 
-      {/* ── ADDED FeedbackModal ── */}
       {feedbackAppt && (
         <FeedbackModal
           appointment={feedbackAppt}
